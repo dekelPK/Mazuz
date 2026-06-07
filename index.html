@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>מוריה מזוז | Event Design</title>
+  <meta name="description" content="מוריה מזוז – יוצרת קונספטים וחוויות מיתוג לאירועים. מתחמי קונספט, מיתוג אירועים וחוויית אירוח שלמה." />
+  <meta property="og:title" content="מוריה מזוז | Event Design" />
+  <meta property="og:description" content="מיתוג, קונספט וחוויות אירוח בהתאמה אישית." />
+  <meta property="og:image" content="gallery1.jpeg" />
+  <link rel="icon" type="image/jpeg" href="WhatsApp Image 2026-06-03 at 18.20.40.jpeg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Heebo:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ivory:    #F5F1EB;
+      --taupe:    #A89C90;
+      --gold:     #C6A06A;
+      --espresso: #2A2018;
+      --dark:     #1A140E;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--ivory);
+      color: var(--espresso);
+      font-family: 'Heebo', sans-serif;
+      font-weight: 300;
+      line-height: 1.8;
+      direction: rtl;
+      overflow-x: hidden;
+    }
+
+    /* ── REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: 0.1s; }
+    .reveal-d2 { transition-delay: 0.22s; }
+    .reveal-d3 { transition-delay: 0.34s; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 48px;
+      transition: background 0.4s, padding 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(26,20,14,0.95);
+      backdrop-filter: blur(12px);
+      padding: 14px 48px;
+    }
+    .nav-logo img {
+      height: 44px;
+      filter: brightness(0) invert(1);
+      mix-blend-mode: normal;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-size: 0.78rem; letter-spacing: 0.14em;
+      color: rgba(255,255,255,0.75); text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span { display: block; width: 22px; height: 1px; background: white; transition: 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+    .mobile-menu {
+      display: none; position: fixed; inset: 0; background: var(--dark); z-index: 190;
+      flex-direction: column; align-items: center; justify-content: center; gap: 36px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--ivory); text-decoration: none; }
+    .mobile-menu a:hover { color: var(--gold); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-left {
+      background: var(--dark);
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 140px 56px 80px;
+      position: relative; z-index: 2;
+    }
+    .hero-left::after { display: none; }
+    .hero-tagline-small {
+      font-size: 0.72rem; letter-spacing: 0.28em;
+      color: var(--gold); text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      font-weight: 400; line-height: 1.15;
+      color: var(--ivory);
+      margin-bottom: 24px;
+    }
+    .hero-sub {
+      font-size: 0.9rem; color: rgba(245,241,235,0.55);
+      letter-spacing: 0.04em; line-height: 1.9;
+      max-width: 320px; margin-bottom: 44px;
+    }
+    .hero-btn {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 15px 36px;
+      background: var(--gold); color: var(--dark);
+      font-family: 'Heebo', sans-serif; font-size: 0.82rem;
+      letter-spacing: 0.16em; text-decoration: none;
+      transition: background 0.3s; align-self: flex-start;
+    }
+    .hero-btn:hover { background: #b8904f; }
+    .hero-btn svg { transform: rotate(180deg); }
+    .hero-right {
+      position: relative; overflow: hidden;
+    }
+    .hero-right img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: brightness(0.75);
+    }
+    .hero-right::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, var(--dark) 0%, rgba(26,20,14,0.5) 40%, transparent 75%);
+    }
+
+    /* ── EVENT TYPES ── */
+    #events {
+      background: var(--ivory);
+      padding: 60px 24px;
+      border-bottom: 1px solid rgba(168,156,144,0.15);
+    }
+    .events-label {
+      text-align: center;
+      font-size: 0.7rem; letter-spacing: 0.28em;
+      color: var(--taupe); text-transform: uppercase;
+      margin-bottom: 36px;
+    }
+    .events-icons {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; gap: 8px;
+      max-width: 900px; margin: 0 auto;
+    }
+    .event-icon-item {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      padding: 18px 24px;
+      border: 1px solid rgba(168,156,144,0.25);
+      background: white;
+      cursor: default; transition: border-color 0.3s, background 0.3s;
+      min-width: 100px;
+    }
+    .event-icon-item:hover { border-color: var(--gold); background: rgba(198,160,106,0.04); }
+    .event-icon-item svg { width: 28px; height: 28px; stroke: var(--gold); fill: none; stroke-width: 1.2; }
+    .event-icon-item span { font-size: 0.75rem; letter-spacing: 0.06em; color: var(--espresso); }
+
+    /* ── GALLERY CAROUSEL ── */
+    #gallery { background: var(--ivory); padding: 80px 0 80px; }
+    .gallery-header { padding: 0 48px; margin-bottom: 36px; }
+    .gallery-header .section-label {
+      font-size: 0.7rem; letter-spacing: 0.28em;
+      color: var(--gold); text-transform: uppercase; display: block;
+      margin-bottom: 0;
+    }
+    .carousel-wrap { position: relative; }
+    .carousel {
+      display: flex; gap: 4px;
+      overflow-x: auto; scroll-behavior: smooth;
+      scrollbar-width: none; padding: 0 48px;
+    }
+    .carousel::-webkit-scrollbar { display: none; }
+    .carousel-item {
+      flex-shrink: 0; width: 340px; height: 260px;
+      overflow: hidden; position: relative;
+    }
+    .carousel-item img, .carousel-item video {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.6s ease; display: block;
+    }
+    .carousel-item:hover img, .carousel-item:hover video { transform: scale(1.04); }
+    .carousel-item:first-child { width: 440px; }
+    .carousel-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--dark); color: white; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 10; transition: background 0.3s;
+    }
+    .carousel-btn:hover { background: var(--gold); }
+    .carousel-btn.prev { right: 12px; }
+    .carousel-btn.next { left: 12px; }
+
+    /* ── CONTACT SECTION ── */
+    #contact {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 600px;
+    }
+    .contact-photo {
+      position: relative; overflow: hidden;
+    }
+    .contact-photo img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: brightness(0.55);
+    }
+    .contact-photo-text {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      justify-content: center; padding: 60px 48px;
+    }
+    .contact-photo-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 400; color: var(--ivory);
+      line-height: 1.3; margin-bottom: 20px;
+    }
+    .contact-photo-sub {
+      font-size: 0.88rem; color: rgba(245,241,235,0.6);
+      line-height: 2; max-width: 340px;
+    }
+    .contact-form-side {
+      background: white; padding: 60px 48px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .contact-form { display: flex; flex-direction: column; gap: 14px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 0; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%; padding: 14px 16px;
+      background: #FAF8F5;
+      border: 1px solid rgba(168,156,144,0.25);
+      border-bottom: 1px solid rgba(168,156,144,0.5);
+      color: var(--espresso);
+      font-family: 'Heebo', sans-serif; font-size: 0.88rem;
+      outline: none; transition: border-color 0.3s;
+      direction: rtl; -webkit-appearance: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-bottom-color: var(--gold); background: white; }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: rgba(168,156,144,0.7); }
+    .form-submit {
+      padding: 15px; background: var(--dark); color: var(--ivory);
+      border: none; font-family: 'Heebo', sans-serif;
+      font-size: 0.85rem; letter-spacing: 0.16em;
+      cursor: pointer; transition: background 0.3s;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .form-submit:hover { background: var(--gold); color: var(--dark); }
+    .form-submit svg { transform: rotate(180deg); }
+    .form-privacy {
+      text-align: center; font-size: 0.7rem;
+      color: rgba(168,156,144,0.6); letter-spacing: 0.08em;
+      margin-top: 6px;
+    }
+    .form-success {
+      display: none; text-align: center; padding: 32px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem; color: var(--espresso);
+    }
+
+    /* ── ABOUT ── */
+    #about {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 560px; background: var(--ivory);
+    }
+    .about-photo { position: relative; overflow: hidden; }
+    .about-photo img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .about-placeholder {
+      width: 100%; height: 100%; min-height: 480px;
+      background: #E0DBD4;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 12px; color: var(--taupe);
+      font-size: 0.75rem; letter-spacing: 0.15em;
+    }
+    .about-content {
+      padding: 80px 64px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .section-label {
+      font-size: 0.68rem; letter-spacing: 0.28em;
+      color: var(--gold); text-transform: uppercase;
+      margin-bottom: 20px; display: block;
+    }
+    .about-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 400; color: var(--espresso);
+      line-height: 1.25; margin-bottom: 24px;
+    }
+    .about-body {
+      font-size: 0.9rem; color: var(--taupe);
+      line-height: 2; margin-bottom: 36px;
+      max-width: 420px;
+    }
+    .about-features {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px 32px;
+    }
+    .about-feature {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.82rem; color: var(--espresso); letter-spacing: 0.04em;
+    }
+    .about-feature svg { width: 18px; height: 18px; stroke: var(--gold); flex-shrink: 0; }
+
+    /* ── MANIFESTO ── */
+    #manifesto {
+      background: var(--dark); text-align: center;
+      padding: 100px 24px; position: relative; overflow: hidden;
+    }
+    #manifesto::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(198,160,106,0.06) 0%, transparent 70%);
+    }
+    .manifesto-line {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+      font-weight: 300; color: rgba(245,241,235,0.55);
+      line-height: 1.5; margin: 14px 0;
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+      position: relative; z-index: 1;
+    }
+    .manifesto-line.visible { opacity: 1; transform: translateY(0); }
+    .manifesto-line.big {
+      font-size: clamp(2rem, 4.5vw, 3.8rem);
+      color: var(--ivory);
+    }
+    .manifesto-divider {
+      width: 1px; height: 48px; background: var(--gold);
+      margin: 24px auto; opacity: 0.4;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark); padding: 44px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid rgba(198,160,106,0.15);
+    }
+    .footer-logo img { height: 36px; filter: brightness(0) invert(1); opacity: 0.7; mix-blend-mode: normal; }
+    .footer-copy {
+      font-size: 0.72rem; color: rgba(245,241,235,0.25);
+      letter-spacing: 0.12em;
+    }
+    .footer-social { display: flex; gap: 20px; }
+    .footer-social a { color: rgba(245,241,235,0.4); transition: color 0.3s; }
+    .footer-social a:hover { color: var(--gold); }
+
+    /* ── FLOATING WA ── */
+    .fab-wa {
+      position: fixed; bottom: 28px; left: 28px; z-index: 300;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: #25D366; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.3);
+      text-decoration: none; transition: transform 0.3s;
+    }
+    .fab-wa:hover { transform: scale(1.08); }
+    .fab-wa svg { width: 24px; height: 24px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { height: 45vw; }
+      .hero-right::after { background: linear-gradient(to top, var(--dark) 0%, transparent 60%); }
+      .hero-left { padding: 100px 28px 60px; }
+      #contact { grid-template-columns: 1fr; }
+      .contact-photo { min-height: 300px; }
+      #about { grid-template-columns: 1fr; }
+      .about-placeholder { min-height: 320px; }
+      .about-content { padding: 52px 28px; }
+      footer { flex-direction: column; gap: 20px; text-align: center; padding: 36px 24px; }
+      .gallery-header { padding: 0 20px; }
+      .carousel { padding: 0 20px; }
+      .carousel-btn { display: none; }
+      .form-row { grid-template-columns: 1fr; }
+      .contact-form-side { padding: 40px 28px; }
+      .contact-photo-text { padding: 40px 28px; }
+      .fab-wa { bottom: 18px; left: 16px; width: 46px; height: 46px; }
+    }
+    @media (max-width: 480px) {
+      .events-icons { gap: 6px; }
+      .event-icon-item { min-width: 80px; padding: 14px 14px; }
+      .about-features { grid-template-columns: 1fr; }
+      .carousel-item { width: 260px; height: 200px; }
+      .carousel-item:first-child { width: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- FLOATING WA -->
+<a href="https://wa.me/972526743389" target="_blank" class="fab-wa" aria-label="וואטסאפ">
+  <svg viewBox="0 0 32 32" fill="white"><path d="M16 2C8.268 2 2 8.268 2 16c0 2.47.677 4.783 1.854 6.762L2 30l7.47-1.826A13.93 13.93 0 0016 30c7.732 0 14-6.268 14-14S23.732 2 16 2zm6.23 18.884c-.34-.17-2.013-.993-2.325-1.106-.312-.113-.538-.17-.764.17-.226.34-.874 1.106-1.072 1.332-.198.226-.396.254-.736.085-.34-.17-1.435-.529-2.734-1.686-1.01-.9-1.692-2.012-1.89-2.352-.198-.34-.021-.523.149-.693.152-.152.34-.396.51-.594.17-.198.226-.34.34-.566.113-.226.056-.424-.028-.594-.085-.17-.764-1.842-1.047-2.522-.275-.662-.556-.572-.764-.582l-.65-.011a1.245 1.245 0 00-.906.424c-.312.34-1.19 1.163-1.19 2.835s1.219 3.288 1.389 3.514c.17.226 2.398 3.664 5.81 5.137.812.35 1.446.56 1.94.716.815.26 1.557.223 2.143.135.654-.097 2.013-.823 2.297-1.617.283-.793.283-1.474.198-1.617-.085-.142-.311-.226-.65-.396z"/></svg>
+</a>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#events"   onclick="closeMobile()">סוגי אירועים</a>
+  <a href="#gallery"  onclick="closeMobile()">גלריה</a>
+  <a href="#contact"  onclick="closeMobile()">יצירת קשר</a>
+  <a href="#about"    onclick="closeMobile()">אודות</a>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-logo">
+    <img src="WhatsApp Image 2026-06-03 at 18.20.40.jpeg" alt="Moria Mazuz" />
+  </div>
+  <ul class="nav-links">
+    <li><a href="#about">אודות</a></li>
+    <li><a href="#gallery">גלריה</a></li>
+    <li><a href="#events">סוגי אירועים</a></li>
+    <li><a href="#contact">השראה</a></li>
+    <li><a href="#contact">יצירת קשר</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleMobile()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-left">
+    <p class="hero-tagline-small reveal">MORIA MAZUZ · EVENT DESIGN</p>
+    <h1 class="hero-title reveal reveal-d1">
+      כל אירוע<br />מתחיל<br />בסיפור.
+    </h1>
+    <p class="hero-sub reveal reveal-d2">
+      מיתוג, קונספט וחוויות אירוח<br />בהתאמה אישית.
+    </p>
+    <a href="#contact" class="hero-btn reveal reveal-d3">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      בואו ניצור משהו מיוחד
+    </a>
+  </div>
+  <div class="hero-right">
+    <img src="gallery1.jpeg" alt="עיצוב אירועים מוריה מזוז" />
+  </div>
+</section>
+
+<!-- EVENT TYPES -->
+<section id="events">
+  <p class="events-label reveal">סוגי אירועים</p>
+  <div class="events-icons reveal reveal-d1">
+    <div class="event-icon-item">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6 2 2 7 2 12s4 10 10 10 10-4.5 10-10S18 2 12 2z"/><path d="M8 12h8M12 8v8"/></svg>
+      <span>אירועים אינטימיים</span>
+    </div>
+    <div class="event-icon-item">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+      <span>הפרשת חלה</span>
+    </div>
+    <div class="event-icon-item">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span>בר מצווה</span>
+    </div>
+    <div class="event-icon-item">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>ברית / בריתה</span>
+    </div>
+    <div class="event-icon-item">
+      <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+      <span>הצעות נישואין</span>
+    </div>
+    <div class="event-icon-item">
+      <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3M3 16v3a2 2 0 002 2h3m8 0h3a2 2 0 002-2v-3"/></svg>
+      <span>אירועי בוטיק</span>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY CAROUSEL -->
+<section id="gallery">
+  <div class="gallery-header reveal">
+    <span class="section-label">השראה לאירועים</span>
+  </div>
+  <div class="carousel-wrap">
+    <div class="carousel" id="carousel">
+      <div class="carousel-item">
+        <img src="gallery1.jpeg" alt="עיצוב אירועים" loading="lazy" />
+      </div>
+      <div class="carousel-item">
+        <img src="gallery2.jpeg" alt="עיצוב אירועים" loading="lazy" />
+      </div>
+      <div class="carousel-item">
+        <img src="gallery3.jpeg" alt="עיצוב אירועים" loading="lazy" />
+      </div>
+      <div class="carousel-item">
+        <video autoplay muted loop playsinline>
+          <source src="hero-video.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+    <button class="carousel-btn prev" onclick="scrollCarousel(-1)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <button class="carousel-btn next" onclick="scrollCarousel(1)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-photo">
+    <img src="gallery2.jpeg" alt="" />
+    <div class="contact-photo-text">
+      <h2 class="contact-photo-title reveal">בואו ניצור<br />אירוע שלא דומה<br />לאף אחד אחר.</h2>
+      <p class="contact-photo-sub reveal reveal-d1">
+        ספרו לי איך אתם רוצים שהאירוע ירגיש,<br />
+        ואני אהפוך את הרעיון שלכם<br />
+        לחוויה ייחודית ומלאת נוכחות.
+      </p>
+    </div>
+  </div>
+  <div class="contact-form-side">
+    <form class="contact-form" id="contactForm" onsubmit="submitForm(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <input type="text" placeholder="שם מלא" required />
+        </div>
+        <div class="form-group">
+          <input type="tel" placeholder="טלפון" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <select required>
+          <option value="" disabled selected>סוג אירוע</option>
+          <option>הפרשת חלה</option>
+          <option>בר מצווה</option>
+          <option>בת מצווה</option>
+          <option>ברית</option>
+          <option>בריתה</option>
+          <option>חינה</option>
+          <option>הצעות נישואין</option>
+          <option>אירוע פרטי</option>
+          <option>אירועי בוטיק</option>
+          <option>אחר</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <input type="text" placeholder="תאריך משוער" />
+      </div>
+      <div class="form-group">
+        <textarea placeholder="ספרו לי על האירוע שלכם..."></textarea>
+      </div>
+      <button type="submit" class="form-submit">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        שלחו פרטים
+      </button>
+      <p class="form-privacy">🔒 הפרטים נשמרים במאגר מאובטח</p>
+    </form>
+    <div class="form-success" id="formSuccess">
+      ✨ תודה! קיבלתי את הפרטים ואחזור אלייך בהקדם.
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-photo">
+    <!-- 📸 להחליף בתמונה אמיתית של מוריה -->
+    <div class="about-placeholder">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#A89C90" stroke-width="1"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <span>תמונת פורטרט של מוריה</span>
+    </div>
+  </div>
+  <div class="about-content">
+    <span class="section-label reveal">נעים להכיר, אני מוריה.</span>
+    <h2 class="about-title reveal reveal-d1">אני יוצרת<br />קונספטים וחוויות<br />שנשארים בזיכרון.</h2>
+    <p class="about-body reveal reveal-d2">
+      אני יוצרת קונספטים וחוויות אירוח שנבנים סביב הסיפור של האנשים.<br /><br />
+      כל אירוע מתחיל ברעיון. אני לוקחת אותו צעד אחד קדימה והופכת אותו לחוויה מדויקת, ייחודית ובלתי נשכחת.<br /><br />
+      מהצבעים, דרך הפרטים הקטנים ועד לאווירה כולה — הכל נבחר בקפידה כדי ליצור רגע שנשאר בזיכרון.
+    </p>
+    <div class="about-features reveal reveal-d3">
+      <div class="about-feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        התאמה אישית
+      </div>
+      <div class="about-feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        חשיבה לכל פרט
+      </div>
+      <div class="about-feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        קונספט ייחודי
+      </div>
+      <div class="about-feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        איכות ללא פשרות
+      </div>
+      <div class="about-feature">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        חוויה שנשארת הרבה אחרי
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section id="manifesto">
+  <div class="manifesto-line big">לא רק עיצוב.</div>
+  <div class="manifesto-line big">חוויה שנשארת בזיכרון.</div>
+  <div class="manifesto-divider"></div>
+  <div class="manifesto-line">קונספט · עיצוב · חוויה</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <img src="WhatsApp Image 2026-06-03 at 18.20.40.jpeg" alt="Moria Mazuz" />
+  </div>
+  <p class="footer-copy">© כל הזכויות שמורות למוריה מזוז</p>
+  <div class="footer-social">
+    <a href="https://www.instagram.com/moria_mazuz?igsh=Z3phczBoN3VhbDZh" target="_blank" aria-label="Instagram">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>
+    </a>
+    <a href="https://wa.me/972526743389" target="_blank" aria-label="WhatsApp">
+      <svg width="18" height="18" viewBox="0 0 32 32" fill="currentColor"><path d="M16 2C8.268 2 2 8.268 2 16c0 2.47.677 4.783 1.854 6.762L2 30l7.47-1.826A13.93 13.93 0 0016 30c7.732 0 14-6.268 14-14S23.732 2 16 2zm6.23 18.884c-.34-.17-2.013-.993-2.325-1.106-.312-.113-.538-.17-.764.17-.226.34-.874 1.106-1.072 1.332-.198.226-.396.254-.736.085-.34-.17-1.435-.529-2.734-1.686-1.01-.9-1.692-2.012-1.89-2.352-.198-.34-.021-.523.149-.693.152-.152.34-.396.51-.594.17-.198.226-.34.34-.566.113-.226.056-.424-.028-.594-.085-.17-.764-1.842-1.047-2.522-.275-.662-.556-.572-.764-.582l-.65-.011a1.245 1.245 0 00-.906.424c-.312.34-1.19 1.163-1.19 2.835s1.219 3.288 1.389 3.514c.17.226 2.398 3.664 5.81 5.137.812.35 1.446.56 1.94.716.815.26 1.557.223 2.143.135.654-.097 2.013-.823 2.297-1.617.283-.793.283-1.474.198-1.617-.085-.142-.311-.226-.65-.396z"/></svg>
+    </a>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 80));
+
+  // Mobile menu
+  function toggleMobile() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
+    document.body.style.overflow = document.getElementById('mobileMenu').classList.contains('open') ? 'hidden' : '';
+  }
+  function closeMobile() {
+    document.getElementById('mobileMenu').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Manifesto
+  const mObs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 220);
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.manifesto-line').forEach(l => mObs.observe(l));
+
+  // Carousel
+  function scrollCarousel(dir) {
+    const c = document.getElementById('carousel');
+    c.scrollBy({ left: dir * -360, behavior: 'smooth' });
+  }
+
+  // Form
+  function submitForm(e) {
+    e.preventDefault();
+    document.getElementById('contactForm').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+    const f = e.target;
+    const text = `היי מוריה 🌿\nשמי ${f[0].value}, טלפון: ${f[1].value}\nסוג אירוע: ${f[2].value}\nתאריך: ${f[3].value}\n${f[4].value}`;
+    setTimeout(() => window.open('https://wa.me/972526743389?text=' + encodeURIComponent(text), '_blank'), 700);
+  }
+</script>
+</body>
+</html>
